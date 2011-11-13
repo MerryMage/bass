@@ -1,4 +1,4 @@
-arch "arch/table/snes-cpu.tbl"
+arch "arch/table/snes-cpu.arch"
 
 macro seek n
   org (({n} & 0x7f0000) >> 1) | ({n} & 0x7fff)
@@ -8,7 +8,7 @@ endmacro
 {seek $808000}; fill $8000
 {seek $808000}
 
-_0x:
+bank0x:
   brk #$55
   ora ($55,x)
   cop #$55
@@ -26,8 +26,8 @@ _0x:
   asl $55aa
   ora $55aaff
 
-_1x:
-  bpl _1x
+bank1x:
+  bpl bank1x
   ora ($55),y
   ora ($55)
   ora ($55,s),y
@@ -44,7 +44,7 @@ _1x:
   asl $55aa,x
   ora $55aaff,x
 
-_2x:
+bank2x:
   jsr $55aa
   and ($55,x)
   jsl $55aaff
@@ -62,8 +62,8 @@ _2x:
   rol $55aa
   and $55aaff
 
-_3x:
-  bmi _3x
+bank3x:
+  bmi bank3x
   and ($55),y
   and ($55)
   and ($55,s),y
@@ -80,7 +80,7 @@ _3x:
   rol $55aa,x
   and $55aaff,x
 
-_4x:
+bank4x:
   rti
   eor ($55,x)
   wdm #$55
@@ -98,8 +98,8 @@ _4x:
   lsr $55aa
   eor $55aaff
 
-_5x:
-  bvc _5x
+bank5x:
+  bvc bank5x
   eor ($55),y
   eor ($55)
   eor ($55,s),y
@@ -116,7 +116,7 @@ _5x:
   lsr $55aa,x
   eor $55aaff,x
 
-_6x:
+bank6x:
   rts
   adc ($55,x)
   per $55aa
@@ -134,8 +134,8 @@ _6x:
   ror $55aa
   adc $55aaff
 
-_7x:
-  bvs _7x
+bank7x:
+  bvs bank7x
   adc ($55),y
   adc ($55)
   adc ($55,s),y
@@ -152,10 +152,10 @@ _7x:
   ror $55aa,x
   adc $55aaff,x
 
-_8x:
-  bra _8x
+bank8x:
+  bra bank8x
   sta ($55,x)
-  brl _8x
+  brl bank8x
   sta $55,s
   sty $55
   sta $55
@@ -170,8 +170,8 @@ _8x:
   stx $55aa
   sta $55aaff
 
-_9x:
-  bcc _9x
+bank9x:
+  bcc bank9x
   sta ($55),y
   sta ($55)
   sta ($55,s),y
@@ -188,7 +188,7 @@ _9x:
   stz $55aa,x
   sta $55aaff,x
 
-_ax:
+bankax:
   ldy #$55
   lda ($55,x)
   ldx #$55
@@ -206,8 +206,8 @@ _ax:
   ldx $55aa
   lda $55aaff
 
-_bx:
-  bcs _bx
+bankbx:
+  bcs bankbx
   lda ($55),y
   lda ($55)
   lda ($55,s),y
@@ -224,7 +224,7 @@ _bx:
   ldx $55aa,y
   lda $55aaff,x
 
-_cx:
+bankcx:
   cpy #$55
   cmp ($55,x)
   rep #$55
@@ -242,8 +242,8 @@ _cx:
   dec $55aa
   cmp $55aaff
 
-_dx:
-  bne _dx
+bankdx:
+  bne bankdx
   cmp ($55),y
   cmp ($55)
   cmp ($55,s),y
@@ -260,7 +260,7 @@ _dx:
   dec $55aa,x
   cmp $55aaff,x
 
-_ex:
+bankex:
   cpx #$55
   sbc ($55,x)
   sep #$55
@@ -278,8 +278,8 @@ _ex:
   inc $55aa
   sbc $55aaff
 
-_fx:
-  beq _fx
+bankfx:
+  beq bankfx
   sbc ($55),y
   sbc ($55)
   sbc ($55,s),y

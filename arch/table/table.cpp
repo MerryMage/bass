@@ -24,16 +24,22 @@ bool BassTable::assembleBlock(const string &block) {
     if(args.size() != opcode.number.size()) continue;
 
     bool mismatch = false;
-    for(unsigned n = 0; n < opcode.number.size(); n++) {
-      unsigned bits = bitLength(args[n]);
-      if(bits && bits != opcode.number[n].bits) { mismatch = true; break; }
+//  for(unsigned n = 0; n < opcode.number.size(); n++) {
+//    unsigned bits = bitLength(args[n]);
+//    if(bits && bits != opcode.number[n].bits) { mismatch = true; break; }
+//  }
+    for(auto &format : opcode.format) {
+      if(format.type != Format::Type::Absolute) continue;
+      if(format.weak == true) continue;
+      unsigned bits = bitLength(args[format.data]);
+      if(bits && bits != opcode.number[format.data].bits) { mismatch = true; break; }
     }
     if(mismatch) continue;
 
     for(auto &format : opcode.format) {
       switch(format.type) {
       case Format::Type::Static:
-        writeBits(format.data, 8);
+        writeBits(format.data, format.bits);
         break;
       case Format::Type::Absolute:
         data = eval(args[format.data]);
@@ -153,23 +159,51 @@ void BassTable::assembleTableRHS(Opcode &opcode, const string &text) {
   lstring list = text.split(" ");
   for(auto &item : list) {
     if(item[0] == '$' && item.length() == 3) {
-      opcode.format.append({ Format::Type::Static, (unsigned)hex((const char*)item + 1) });
+      Format format = { Format::Type::Static };
+      format.data = hex((const char*)item + 1);
+      format.bits = (item.length() - 1) * 4;
+      opcode.format.append(format);
+    }
+
+    if(item[0] == '%') {
+      Format format = { Format::Type::Static };
+      format.data = binary((const char*)item + 1);
+      format.bits = (item.length() - 1);
+      opcode.format.append(format);
     }
 
     if(item[0] == '=') {
-      opcode.format.append({ Format::Type::Absolute, item[1] - 'a' });
+      Format format = { Format::Type::Absolute };
+      format.data = item[1] - 'a';
+      opcode.format.append(format);
+    }
+
+    if(item[0] == '~') {
+      Format format = { Format::Type::Absolute };
+      format.data = item[1] - 'a';
+      format.weak = true;
+      opcode.format.append(format);
     }
 
     if(item[0] == '+') {
-      opcode.format.append({ Format::Type::Relative, item[2] - 'a', +(item[1] - '0') });
+      Format format = { Format::Type::Relative };
+      format.data = item[2] - 'a';
+      format.displacement = +(item[1] - '0');
+      opcode.format.append(format);
     }
 
     if(item[0] == '-') {
-      opcode.format.append({ Format::Type::Relative, item[2] - 'a', -(item[1] - '0') });
+      Format format = { Format::Type::Relative };
+      format.data = item[2] - 'a';
+      format.displacement = -(item[1] - '0');
+      opcode.format.append(format);
     }
 
     if(item[0] == '*') {
-      opcode.format.append({ Format::Type::Repeat, item[1] - 'a', (unsigned)hex((const char*)item + 3) });
+      Format format = { Format::Type::Repeat };
+      format.data = item[1] - 'a';
+      format.displacement = hex((const char*)item + 3);
+      opcode.format.append(format);
     }
   }
 }

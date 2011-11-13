@@ -14,8 +14,9 @@ protected:
 
   struct Format {
     enum class Type : unsigned { Static, Absolute, Relative, Repeat } type;
-    unsigned data;
+    unsigned data, bits;
     signed displacement;
+    bool weak;
   };
 
   struct Opcode {
