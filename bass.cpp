@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
   char argv2[] = "-arch=table";
   char argv3[] = "-o";
   char argv4[] = "test/test4.bin";
-  char argv5[] = "test/test.asm";
+  char argv5[] = "test/snes-smp-table.asm";
   char *argvN[] = {
     argv1, argv2, argv3, argv4, argv5, nullptr
   };
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
   }
 
   if(!arch || outputFilename == "" || inputFilename.size() < 1) {
-    print("bass v04.05\n");
+    print("bass v04.06\n");
     print("author: byuu\n");
     print("usage: bass -arch=(arch) [options] -o output input [input ...]\n\n");
     print("supported archs:\n");

@@ -1,3 +1,5 @@
+arch(snes_smp) = R"(
+
 nop              ;$00
 brk              ;$0f
 rts              ;$6f
@@ -79,25 +81,25 @@ cpw *08          ;$5a =a
 ldw *08          ;$ba =a
 stw *08          ;$da =a
 
-ora !*13:*03     ;$2a ~b ~a
-ora *13:*03      ;$0a ~b ~a
+orc !*13:*03     ;$2a ~b ~a
+orc *13:*03      ;$0a ~b ~a
 and !*13:*03     ;$6a ~b ~a
 and *13:*03      ;$4a ~b ~a
 eor *13:*03      ;$8a ~b ~a
-lda *13:*03      ;$aa ~b ~a
-sta *13:*03      ;$ca ~b ~a
+ldc *13:*03      ;$aa ~b ~a
+stc *13:*03      ;$ca ~b ~a
 not *13:*03      ;$ea ~b ~a
 
 ora (x)          ;$06
-ora (x)=(y)      ;$19
+orr (x)=(y)      ;$19
 ora (*08,x)      ;$07 =a
 ora (*08),y      ;$17 =a
 ora #*08         ;$08 =a
-ora *08=#*08     ;$18 =b =a
+orr *08=#*08     ;$18 =b =a
 ora *16,x        ;$15 =a
 ora *16,y        ;$16 =a
 ora *08,x        ;$14 =a
-ora *08=*08      ;$09 =b =a
+orr *08=*08      ;$09 =b =a
 ora *16          ;$05 =a
 ora *08          ;$04 =a
 
@@ -170,11 +172,11 @@ sta (x)          ;$c6
 sta (x)+         ;$af
 sta (*08,x)      ;$c7 =a
 sta (*08),y      ;$d7 =a
-sta *08=#*08     ;$8f =b =a
+str *08=#*08     ;$8f =b =a
 sta *16,x        ;$d5 =a
 sta *16,y        ;$d6 =a
 sta *08,x        ;$d4 =a
-sta *08=*08      ;$fa =b =a
+str *08=*08      ;$fa =b =a
 sta *16          ;$c5 =a
 sta *08          ;$c4 =a
 
@@ -244,3 +246,5 @@ dec              ;$9c
 dec *08,x        ;$9b =a
 dec *16          ;$8c =a
 dec *08          ;$8b =a
+
+)";

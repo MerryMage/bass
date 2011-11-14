@@ -1,4 +1,4 @@
-arch "arch/table/snes-smp.arch"
+arch snes.smp
 org $0000; fill $8000
 org $0000
 
@@ -12,8 +12,8 @@ bank0x:
   ora (x)
   ora ($55,x)
   ora #$55
-  ora $55=$aa
-  ora $15aa:2
+  orr $55=$aa
+  orc $15aa:2
   asl $55
   asl $55aa
   php
@@ -29,8 +29,8 @@ bank1x:
   ora $55aa,x
   ora $55aa,y
   ora ($55),y
-  ora $55=#$aa
-  ora (x)=(y)
+  orr $55=#$aa
+  orr (x)=(y)
   dew $55
   asl $55,x
   asl
@@ -49,7 +49,7 @@ bank2x:
   and ($55,x)
   and #$55
   and $55=$aa
-  ora !$15aa:2
+  orc !$15aa:2
   rol $55
   rol $55aa
   pha
@@ -162,7 +162,7 @@ bank8x:
   dec $55aa
   ldy #$55
   plp
-  sta $55=#$aa
+  str $55=#$aa
 
 bank9x:
   bcc bank9x
@@ -193,7 +193,7 @@ bankax:
   sbc ($55,x)
   sbc #$55
   sbc $55=$aa
-  lda $15aa:2
+  ldc $15aa:2
   inc $55
   inc $55aa
   cpy #$55
@@ -229,7 +229,7 @@ bankcx:
   sta ($55,x)
   cpx #$55
   stx $55aa
-  sta $15aa:2
+  stc $15aa:2
   sty $55
   sty $55aa
   ldx #$55
@@ -283,7 +283,7 @@ bankfx:
   lda ($55),y
   ldx $55
   ldx $55,y
-  sta $55=$aa
+  str $55=$aa
   ldy $55,x
   iny
   tay

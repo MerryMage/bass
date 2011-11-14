@@ -14,9 +14,9 @@ protected:
 
   struct Format {
     enum class Type : unsigned { Static, Absolute, Relative, Repeat } type;
-    unsigned data, bits;
+    enum class Match : unsigned { Exact, Strong, Weak } match;
+    unsigned data, bits, argument;
     signed displacement;
-    bool weak;
   };
 
   struct Opcode {
@@ -29,7 +29,7 @@ protected:
   vector<Opcode> table;
   uint64_t bitval, bitpos;
 
-  unsigned bitLength(string &text);
+  unsigned bitLength(string &text) const;
   void writeBits(uint64_t data, unsigned bits);
   bool parseTable(const string &text);
   void assembleTableLHS(Opcode &opcode, const string &text);

@@ -1,4 +1,4 @@
-arch "arch/table/snes-cpu.arch"
+arch snes.cpu
 
 macro seek n
   org (({n} & 0x7f0000) >> 1) | ({n} & 0x7fff)
@@ -85,7 +85,7 @@ bank4x:
   eor ($55,x)
   wdm #$55
   eor $55,s
-  mvp $55,$aa
+  mvp $aa=$55
   eor $55
   lsr $55
   eor [$55]
@@ -103,7 +103,7 @@ bank5x:
   eor ($55),y
   eor ($55)
   eor ($55,s),y
-  mvn $55,$aa
+  mvn $aa=$55
   eor $55,x
   lsr $55,x
   eor [$55],y
