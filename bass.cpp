@@ -36,6 +36,14 @@ int main(int argc, char **argv) {
       delete arch;
       arch = new BassSnesSmpCanonical;
       n++;
+    } else if(strbegin(argv[n], "-D")) {
+      string argument = argv[n];
+      argument.ltrim<1>("-D");
+      lstring part = argument.split<1>("=");
+      arch->defaultMacros.append({
+        {"global::", part[0]}, {}, part(1, "1")  //no argument sets value to true (1)
+      });
+      n++;
     } else if(cstring{argv[n]} == "-case-insensitive") {
       arch->options.caseInsensitive = true;
       n++;
@@ -58,9 +66,9 @@ int main(int argc, char **argv) {
   }
 
   if(outputFilename == "" || inputFilename.size() < 1) {
-    print("bass v05.04\n");
+    print("bass v06\n");
     print("author: byuu\n");
-    print("usage: bass [-arch=(arch)] [options] -o output input [input ...]\n\n");
+    print("usage: bass [-arch=name] [-Dname(=value) ...] [options] -o output input [input ...]\n\n");
     print("supported archs:\n");
     print("  table (default)\n");
     print("  snes-smp-canonical\n");

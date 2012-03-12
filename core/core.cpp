@@ -19,6 +19,7 @@ bool Bass::assemble(const string &filename) {
     base = 0;
     for(unsigned n = 0; n < 256; n++) table[n] = n;
     macros.reset();
+    for(auto &macro : defaultMacros) macros.append(macro);
     activeNamespace = "global";
     activeLabel = "#invalid";
     macroDepth = 0;

@@ -59,4 +59,7 @@ protected:
   vector<string> fileName;
   vector<unsigned> lineNumber;
   vector<unsigned> blockNumber;
+
+public:
+  vector<Macro> defaultMacros;
 };
