@@ -5,12 +5,6 @@
 
 namespace nall {
 
-//note: this header is intended to form the base for user-defined literals;
-//once they are supported by GCC. eg:
-//unsigned operator "" b(const char *s) { return binary(s); }
-//-> signed data = 1001b;
-//(0b1001 is nicer, but is not part of the C++ standard)
-
 constexpr inline uintmax_t binary_(const char *s, uintmax_t sum = 0) {
   return (
     *s == '0' || *s == '1' ? binary_(s + 1, (sum << 1) | *s - '0') :

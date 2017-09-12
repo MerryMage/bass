@@ -21,6 +21,7 @@
 #include <nall/file.hpp>
 #include <nall/filemap.hpp>
 #include <nall/function.hpp>
+#include <nall/group.hpp>
 #include <nall/gzip.hpp>
 #include <nall/http.hpp>
 #include <nall/image.hpp>
@@ -29,16 +30,17 @@
 #include <nall/intrinsics.hpp>
 #include <nall/invoke.hpp>
 #include <nall/map.hpp>
+#include <nall/matrix.hpp>
 #include <nall/png.hpp>
 #include <nall/property.hpp>
 #include <nall/random.hpp>
 #include <nall/serializer.hpp>
-#include <nall/set.hpp>
 #include <nall/sha256.hpp>
 #include <nall/sort.hpp>
 #include <nall/stdint.hpp>
 #include <nall/stream.hpp>
 #include <nall/string.hpp>
+#include <nall/thread.hpp>
 #include <nall/traits.hpp>
 #include <nall/unzip.hpp>
 #include <nall/utility.hpp>

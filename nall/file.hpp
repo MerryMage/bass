@@ -98,6 +98,14 @@ namespace nall {
       return true;
     }
 
+    static bool create(const string &filename) {
+      //create an empty file (will replace existing files)
+      file fp;
+      if(fp.open(filename, mode::write) == false) return false;
+      fp.close();
+      return true;
+    }
+
     static string sha256(const string &filename) {
       auto buffer = read(filename);
       return nall::sha256(buffer.data(), buffer.size());
@@ -219,11 +227,13 @@ namespace nall {
     static bool exists(const string &filename) {
       #if !defined(_WIN32)
       struct stat64 data;
-      return stat64(filename, &data) == 0;
+      if(stat64(filename, &data) != 0) return false;
       #else
       struct __stat64 data;
-      return _wstat64(utf16_t(filename), &data) == 0;
+      if(_wstat64(utf16_t(filename), &data) != 0) return false;
       #endif
+      //return true if this is a file, and false if this is a directory
+      return !(data.st_mode & S_IFDIR);
     }
 
     static uintmax_t size(const string &filename) {
@@ -256,6 +266,10 @@ namespace nall {
       return fp;
     }
 
+    explicit operator bool() const {
+      return open();
+    }
+
     bool open(const string &filename, mode mode_) {
       if(fp) return false;
 
@@ -285,17 +299,14 @@ namespace nall {
       if(!fp) return;
       buffer_flush();
       fclose(fp);
-      fp = 0;
+      fp = nullptr;
     }
 
     file() {
-      memset(buffer, 0, sizeof buffer);
-      buffer_offset = -1;  //invalidate buffer
-      buffer_dirty = false;
-      fp = 0;
-      file_offset = 0;
-      file_size = 0;
-      file_mode = mode::read;
+    }
+
+    file(const string &filename, mode mode_) {
+      open(filename, mode_);
     }
 
     ~file() {
@@ -307,13 +318,13 @@ namespace nall {
 
   private:
     enum { buffer_size = 1 << 12, buffer_mask = buffer_size - 1 };
-    char buffer[buffer_size];
-    int buffer_offset;
-    bool buffer_dirty;
-    FILE *fp;
-    unsigned file_offset;
-    unsigned file_size;
-    mode file_mode;
+    char buffer[buffer_size] = {0};
+    int buffer_offset = -1;  //invalidate buffer
+    bool buffer_dirty = false;
+    FILE *fp = nullptr;
+    unsigned file_offset = 0;
+    unsigned file_size = 0;
+    mode file_mode = mode::read;
 
     void buffer_sync() {
       if(!fp) return;  //file not open

@@ -36,20 +36,28 @@ endif
 
 ifeq ($(compiler),)
   ifeq ($(platform),win)
-    compiler := gcc
+    compiler := g++
+    flags :=
+    link :=
   else ifeq ($(platform),osx)
-    compiler := gcc-mp-4.7
+    compiler := clang
+    flags := -w -stdlib=libc++
+    link := -lc++ -lobjc
   else
-    compiler := gcc-4.7
+    compiler := g++-4.7
+    flags :=
+    link :=
   endif
+
+  cflags := -x c -std=gnu99
+  objcflags := -x objective-c -std=gnu99
+  cppflags := -x c++ -std=gnu++11
+  objcppflags := -x objective-c++ -std=gnu++11
 endif
 
-c := $(compiler) -std=gnu99
-cpp := $(subst cc,++,$(compiler)) -std=gnu++11
-
 ifeq ($(arch),x86)
-  c := $(c) -m32
-  cpp := $(cpp) -m32
+  flags := -m32 $(flags)
+  link := -m32 $(link)
 endif
 
 ifeq ($(prefix),)

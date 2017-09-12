@@ -4,7 +4,7 @@ namespace nall {
 
 string activepath() {
   string result;
-  #ifdef _WIN32
+  #if defined(PLATFORM_WINDOWS)
   wchar_t path[PATH_MAX] = L"";
   auto unused = _wgetcwd(path, PATH_MAX);
   result = (const char*)utf8_t(path);
@@ -21,7 +21,7 @@ string activepath() {
 
 string realpath(const string &name) {
   string result;
-  #ifdef _WIN32
+  #if defined(PLATFORM_WINDOWS)
   wchar_t path[PATH_MAX] = L"";
   if(_wfullpath(path, utf16_t(name), PATH_MAX)) result = (const char*)utf8_t(path);
   result.transform("\\", "/");
@@ -33,38 +33,67 @@ string realpath(const string &name) {
   return result;
 }
 
+// /home/username/
+// c:/users/username/
 string userpath() {
   string result;
-  #ifdef _WIN32
+  #if defined(PLATFORM_WINDOWS)
   wchar_t path[PATH_MAX] = L"";
-  SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, path);
+  SHGetFolderPathW(nullptr, CSIDL_PROFILE | CSIDL_FLAG_CREATE, nullptr, 0, path);
   result = (const char*)utf8_t(path);
   result.transform("\\", "/");
   #else
-  char path[PATH_MAX] = "";
   struct passwd *userinfo = getpwuid(getuid());
-  if(userinfo) strcpy(path, userinfo->pw_dir);
-  result = path;
+  result = userinfo->pw_dir;
   #endif
   if(result.empty()) result = ".";
   if(result.endswith("/") == false) result.append("/");
   return result;
 }
 
+// /home/username/.config/
+// c:/users/username/appdata/roaming/
 string configpath() {
-  #ifdef _WIN32
-  return userpath();
+  string result;
+  #if defined(PLATFORM_WINDOWS)
+  wchar_t path[PATH_MAX] = L"";
+  SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, path);
+  result = (const char*)utf8_t(path);
+  result.transform("\\", "/");
+  #elif defined(PLATFORM_OSX)
+  result = {userpath(), "Library/Application Support/"};
   #else
-  return {userpath(), ".config/"};
+  result = {userpath(), ".config/"};
   #endif
+  if(result.empty()) result = ".";
+  if(result.endswith("/") == false) result.append("/");
+  return result;
+}
+
+string sharedpath() {
+  string result;
+  #if defined(PLATFORM_WINDOWS)
+  wchar_t path[PATH_MAX] = L"";
+  SHGetFolderPathW(nullptr, CSIDL_COMMON_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, path);
+  result = (const char*)utf8_t(path);
+  result.transform("\\", "/");
+  #elif defined(PLATFORM_OSX)
+  result = "/Library/Application Support/";
+  #else
+  result = "/usr/share/";
+  #endif
+  if(result.empty()) result = ".";
+  if(result.endswith("/") == false) result.append("/");
+  return result;
 }
 
 string temppath() {
-  #ifdef _WIN32
+  #if defined(PLATFORM_WINDOWS)
   wchar_t path[PATH_MAX] = L"";
   GetTempPathW(PATH_MAX, path);
-//path.transform("\\", "/");
-  return (const char*)utf8_t(path);
+  string result = (const char*)utf8_t(path);
+  result.transform("\\", "/");
+  return result;
   #else
   return "/tmp/";
   #endif
