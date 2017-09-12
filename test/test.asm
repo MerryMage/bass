@@ -3,10 +3,10 @@ arch snes.cpu
 org $0000; fill $8000
 org $0000
 
-macro usart_read serial
-  lda {serial}
-  -; beq {-}
-endmacro
+define x
 
-usart1_readb:
-  {usart_read $16}
+if {defined y}
+   lda #$aa
+else
+  lda #${x}55aa
+endif
